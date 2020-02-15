@@ -39,16 +39,9 @@ public:
     return index;
   }
 
-  bool isSatisfied(int num, int id)
+  virtual bool isSatisfied(Point<N>& other)
   {
-    if (num < 0)
-      return true;
-    int idPoint = getID();
-    int id1 = idPoint % num;
-    int id2 = (idPoint / num) % num;
-    if (id1 != id && id2 != id)
-      return true;
-    return false;
+    return true;
   }
 };
 
@@ -172,9 +165,7 @@ private:
   void nearestNeighborRecursive(
                                const Point<N>& key, 
                                Node * currentNode, 
-                               BoundedQueue<Point<N> > &pQueue, 
-                               int num, 
-                               int id);
+                               BoundedQueue<Point<N>> &pQueue);
 public:
   KDTree(); //construct an empty tree
   KDTree(vector<Point<N>> & points); 
@@ -185,9 +176,7 @@ public:
    */
   vector<Point<N>>  kNNValue(
                             Point<N>& key,
-                            size_t k,
-                            int num = -1,
-                            int id = -1); 
+                            size_t k); 
 };
 
 template <size_t N>
@@ -252,9 +241,7 @@ void
 KDTree<N>::nearestNeighborRecursive(
                         const Point<N>& key,
                         typename KDTree<N>::Node* currentNode,
-                        BoundedQueue<Point<N>> &pQueue,
-                        int num,
-                        int id)
+                        BoundedQueue<Point<N>> &pQueue)
 {
   if (currentNode == NULL)
     return;
@@ -290,12 +277,10 @@ template <size_t N>
 vector<Point<N>>
 KDTree<N>::kNNValue(
                 Point<N>& key,
-                size_t k,
-                int num,
-                int id)
+                size_t k)
 {
   BoundedQueue<Point<N>> pQueue(k);
-  nearestNeighborRecursive(key, root, pQueue, num, id);
+  nearestNeighborRecursive(key, root, pQueue);
   vector<Point<N>> result = pQueue.getAttribute();
   return result;
 }
